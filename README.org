@@ -1,0 +1,52 @@
+#+TITLE: tooManyCellsR
+#+AUTHOR: Gregory W. Schwartz
+#+OPTIONS: date:nil creator:nil timestamp:nil toc:t
+
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/setup/theme-readtheorg.setup
+
+[[https://gregoryschwartz.github.io/too-many-cells/][Website]]
+
+This package is an R wrapper around =too-many-cells=. See
+[[https://github.com/GregorySchwartz/too-many-cells]] for latest version of the
+program this wrapper targets.
+
+See [[https://www.biorxiv.org/content/10.1101/519660v1][the bioRxiv paper]] for more information about the algorithm.
+
+[[file:img/pruned_tree.png]]
+
+* Description
+
+=too-many-cells= is a suite of tools, algorithms, and visualizations focusing on
+the relationships between cell clades. This includes new ways of clustering,
+plotting, choosing differential expression comparisons, and more!
+=TooManyCellsR= is an R wrapper around =too-many-cells= to facilitate
+ease-of-use for R users. *This package requires =too-many-cells= to be installed
+and in your path!* See [[https://github.com/GregorySchwartz/too-many-cells]] for
+detailed installation instructions.
+
+* Usage
+
+This package allows for all features from =too-many-cells= to be used in R, with
+a focus on the =make-tree= entry point. For more information about the different
+options, see the documentation for =make-tree= with included examples at
+[[https://github.com/GregorySchwartz/too-many-cells]].
+
+The input matrix should be of Matrix format from the Matrix library, with cell
+barcode column names and features (genes) as row names. The =labels= argument
+takes a data frame with =item= (cell barcodes) and =label= (whatever labels you
+want to give them, such as tissue of origin, celltype, etc.) columns.
+
+The =args= argument contains a list of command line arguments fed to
+=too-many-cells=. The default is to just have =make-tree= as an argument. For a
+detailed list, check =too-many-cells make-tree -h= and check out the
+documentation at [[https://github.com/GregorySchwartz/too-many-cells]].
+
+The main function to use is =tooManyCells=. For example:
+
+#+BEGIN_SRC R
+tooManyCells(mat, args = c("make-tree", "--smart-cutoff", "4", "--min-size", "1"))
+plot(res$treePlot, axes = FALSE)
+res$stdout
+res$nodeInfo
+plot(res$clumpinessPlot, axes = FALSE)
+#+END_SRC r
