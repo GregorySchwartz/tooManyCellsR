@@ -1,9 +1,9 @@
 Package: tooManyCellsR
-Title: An R wrapper for too-many-cells, for clustering single cells and analyzing cell clade relationships with colorful visualizations.
+Title: An R Wrapper for TooManyCells
 Version: 0.1.0.0
 Author: Gregory W. Schwartz
 Maintainer: Gregory W. Schwartz <gsch@pennmedicine.upenn.edu>
-Description: This package contains R helper functions for using too-many-cells, a command line program for clustering, visualizing, and quantifying cell clade relationships. See https://gregoryschwartz.github.io/too-many-cells/ for more details.
+Description: An R wrapper for using too-many-cells, a command line program for clustering, visualizing, and quantifying cell clade relationships. See <https://gregoryschwartz.github.io/too-many-cells/> for more details.
 Imports: Matrix, imager, ggplot2, cowplot, jsonlite
 License: GPL-3
 Encoding: UTF-8

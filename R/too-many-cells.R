@@ -11,10 +11,12 @@
 #' @return None
 #' @export
 #' @examples
+#' \dontrun{
 #' library(Matrix)
 #' df = read.csv("mat.csv", row.names = 1, header = TRUE)
-#' mat = Matrix(as.matrix(in), sparse = TRUE) # Make sure there are row and column names for the matrix.
+#' mat = Matrix(as.matrix(in), sparse = TRUE)
 #' writeMatrix(mat)
+#' }
 
 writeMatrix = function(mat, labels = NULL) {
 
@@ -25,7 +27,7 @@ writeMatrix = function(mat, labels = NULL) {
   Matrix::writeMM(mat, paste0(tmp, "/matrix.mtx"))
 
   # Data frame of genes.
-  write.table(data.frame(x = rownames(mat), y = rownames(mat))
+  utils::write.table(data.frame(x = rownames(mat), y = rownames(mat))
             , file = paste0(tmp, "/genes.tsv")
             , sep = "\t"
             , row.names = FALSE
@@ -34,7 +36,7 @@ writeMatrix = function(mat, labels = NULL) {
               )
 
   # Data frame of cell barcodes.
-  write.table(colnames(mat)
+  utils::write.table(colnames(mat)
             , file = paste0(tmp, "/barcodes.tsv")
             , sep = "\t"
             , row.names = FALSE
@@ -44,7 +46,7 @@ writeMatrix = function(mat, labels = NULL) {
 
   # Write labels file.
   if(!(is.null(labels))) {
-    write.table(labels
+    utils::write.table(labels
               , file = paste0(tmp, "/labels.csv")
               , sep = ","
               , row.names = FALSE
@@ -66,7 +68,9 @@ writeMatrix = function(mat, labels = NULL) {
 #' @return The imported data frame or NULL if an error occurred.
 #' @export
 #' @examples
+#' \dontrun{
 #' x = tryFunc(read.csv, "input.csv")
+#' }
 tryFunc = function(f, file) {
   return(tryCatch(f(file)
                 , error = function(e) { print(paste0(file, " not found, ignoring import.")) }
@@ -88,10 +92,12 @@ tryFunc = function(f, file) {
 #'   "node_info.csv", and "cluster_diversity.csv".
 #' @export
 #' @examples
+#' \dontrun{
 #' res = importResults("out")
 #' plot(res$treePlot, axes = FALSE)
 #' res$clumpiness
 #' plot(res$clumpinessPlot, axes = FALSE)
+#' }
 
 importResults = function(dir = "out") {
 
@@ -100,10 +106,10 @@ importResults = function(dir = "out") {
   projectionPlotRes = tryFunc(imager::load.image, paste0(dir, "/projection.pdf"))
   labelProjectionPlotRes = tryFunc(imager::load.image, paste0(dir, "/label_projection.pdf"))
 
-  clumpinessRes = tryFunc(read.csv, paste0(dir, "/clumpiness.csv"))
-  clusterInfoRes = tryFunc(read.csv, paste0(dir, "/cluster_info.csv"))
-  nodeInfoRes = tryFunc(read.csv, paste0(dir, "/node_info.csv"))
-  clusterDiversityRes = tryFunc(read.csv, paste0(dir, "/cluster_diversity.csv"))
+  clumpinessRes = tryFunc(utils::read.csv, paste0(dir, "/clumpiness.csv"))
+  clusterInfoRes = tryFunc(utils::read.csv, paste0(dir, "/cluster_info.csv"))
+  nodeInfoRes = tryFunc(utils::read.csv, paste0(dir, "/node_info.csv"))
+  clusterDiversityRes = tryFunc(utils::read.csv, paste0(dir, "/cluster_diversity.csv"))
 
   res = list( treePlot            = treePlotRes
             , clumpinessPlot      = clumpinessPlotRes
@@ -144,11 +150,13 @@ importResults = function(dir = "out") {
 #'   "node_info.csv", and "cluster_diversity.csv".
 #' @export
 #' @examples
+#' \dontrun{
 #' tooManyCells(mat, args = c("make-tree", "--smart-cutoff", "4", "--min-size", "1"))
 #' plot(res$treePlot, axes = FALSE)
 #' res$stdout
 #' res$nodeInfo
 #' plot(res$clumpinessPlot, axes = FALSE)
+#' }
 
 tooManyCells = function( mat
                        , args = c("make-tree")
@@ -180,12 +188,12 @@ tooManyCells = function( mat
   stdout = system2("too-many-cells", args = c(args, autoArgs), stdout = TRUE)
 
   # Get the output as a data frame.
-  stdoutDf = read.csv(text = stdout)
+  stdoutDf = utils::read.csv(text = stdout)
 
   # Plot tree if needed.
   if("make-tree" %in% args) {
     p = imager::load.image(paste0(output, "/dendrogram.svg"))
-    plot(p, axes = FALSE)
+    graphics::plot(p, axes = FALSE)
   }
 
   # Clean up input files.

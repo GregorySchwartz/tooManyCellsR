@@ -39,9 +39,11 @@ This function will run too-many-cells on a Matrix.
   \url{https://gregoryschwartz.github.io/too-many-cells/} ).
 }
 \examples{
+\dontrun{
 tooManyCells(mat, args = c("make-tree", "--smart-cutoff", "4", "--min-size", "1"))
 plot(res$treePlot, axes = FALSE)
 res$stdout
 res$nodeInfo
 plot(res$clumpinessPlot, axes = FALSE)
+}
 }

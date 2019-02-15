@@ -22,8 +22,10 @@ make-tree run into R as data frames. Does not include cluster list. Look at
 the main tooManyCells function for the cluster list.
 }
 \examples{
+\dontrun{
 res = importResults("out")
 plot(res$treePlot, axes = FALSE)
 res$clumpiness
 plot(res$clumpinessPlot, axes = FALSE)
+}
 }

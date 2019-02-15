@@ -23,8 +23,10 @@ directory containing matrix.mtx, genes.tsv, barcodes.tsv, and optionally a
 labels.csv file.
 }
 \examples{
+\dontrun{
 library(Matrix)
 df = read.csv("mat.csv", row.names = 1, header = TRUE)
-mat = Matrix(as.matrix(in), sparse = TRUE) # Make sure there are row and column names for the matrix.
+mat = Matrix(as.matrix(in), sparse = TRUE)
 writeMatrix(mat)
+}
 }

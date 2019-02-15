@@ -19,5 +19,7 @@ This function will fail gracefully instead of stopping the program with an
 error.
 }
 \examples{
+\dontrun{
 x = tryFunc(read.csv, "input.csv")
+}
 }
