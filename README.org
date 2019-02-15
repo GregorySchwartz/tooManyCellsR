@@ -29,7 +29,7 @@ detailed installation instructions.
 First install =too-many-cells= using the instructions in the [[https://github.com/GregorySchwartz/too-many-cells][documentation]].
 Next, install this packages from github:
 
-#+BEGIN_SRC shell
+#+BEGIN_SRC R
 install.packages("devtools")
 library(devtools)
 install_github("GregorySchwartz/tooManyCellsR")
