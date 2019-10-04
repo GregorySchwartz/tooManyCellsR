@@ -11,14 +11,12 @@
 #' @return None
 #' @export
 #' @examples
-#' \dontrun{
-#' library(Matrix)
-#' df = read.csv("mat.csv", row.names = 1, header = TRUE)
-#' mat = Matrix(as.matrix(in), sparse = TRUE)
-#' writeMatrix(mat)
-#' }
+#' input <- system.file("extdata", "mat.csv", package="TooManyCellsR")
+#' df = read.csv(input, row.names = 1, header = TRUE)
+#' mat = Matrix::Matrix(as.matrix(df), sparse = TRUE)
+#' writeMatrixFiles(mat)
 
-writeMatrix = function(mat, labels = NULL) {
+writeMatrixFiles = function(mat, labels = NULL) {
 
   # Output directory.
   tmp = tempdir()
@@ -68,9 +66,11 @@ writeMatrix = function(mat, labels = NULL) {
 #' @return The imported data frame or NULL if an error occurred.
 #' @export
 #' @examples
-#' \dontrun{
-#' x = tryFunc(read.csv, "input.csv")
-#' }
+#' input <- system.file("extdata", "mat.csv", package="TooManyCellsR")
+#' fail = tryFunc(read.csv, "fail.csv")
+#' fail
+#' success = tryFunc(read.csv, input)
+#' success
 tryFunc = function(f, file) {
   return(tryCatch(f(file)
                 , error = function(e) { print(paste0(file, " not found, ignoring import.")) }
@@ -79,12 +79,12 @@ tryFunc = function(f, file) {
          )
 }
 
-#' Import some too-many-cells make-tree outputs into a data frame.
+#' Import some 'too-many-cells make-tree' outputs into a data frame.
 #'
-#' This function will import some of the files resulting from a too-many-cells
-#' make-tree run into R as data frames. Does not include cluster list. Look at
+#' This function will import some of the files resulting from a 'too-many-cells
+#' make-tree' run into R as data frames. Does not include cluster list. Look at
 #' the main tooManyCells function for the cluster list.
-#' @param dir The output directory of a too-many-cells run.
+#' @param dir The output directory of a 'too-many-cells' run.
 #' @return A list of each output. Reads the following files, see
 #'   \url{https://gregoryschwartz.github.io/too-many-cells/} for more details:
 #'   "dendrogram.svg", "clumpiness.pdf", "projection.pdf",
@@ -92,11 +92,26 @@ tryFunc = function(f, file) {
 #'   "node_info.csv", and "cluster_diversity.csv".
 #' @export
 #' @examples
+#' input <- system.file("extdata", "mat.csv", package="TooManyCellsR")
+#' inputLabels <- system.file("extdata", "labels.csv", package="TooManyCellsR")
+#' df = read.csv(input, row.names = 1, header = TRUE)
+#' mat = Matrix::Matrix(as.matrix(df), sparse = TRUE)
+#' labelsDf = read.csv(inputLabels, header = TRUE)
+#' # Here we draw this small toy example with no filter or normalization, and
+#' # decrease the size of the branches and increase the size of the leaf nodes.
+#' # With non-toy real world single cell data, these options should not be
+#' # necessary.
 #' \dontrun{
+#' tooManyCells( mat, labels = labelsDf
+#'             , args = c( "make-tree"
+#'                       , "--no-filter"
+#'                       , "--normalization", "NoneNorm"
+#'                       , "--draw-max-node-size", "40"
+#'                       , "--draw-max-leaf-node-size", "70"
+#'                       )
+#'             )
 #' res = importResults("out")
 #' plot(res$treePlot, axes = FALSE)
-#' res$clumpiness
-#' plot(res$clumpinessPlot, axes = FALSE)
 #' }
 
 importResults = function(dir = "out") {
@@ -125,10 +140,10 @@ importResults = function(dir = "out") {
 
 }
 
-#' Execute too-many-cells.
+#' Execute 'too-many-cells'.
 #'
-#' This function will run too-many-cells on a Matrix.
-#'   Requires too-many-cells to be installed (follow instructions at
+#' This function will run 'too-many-cells' on a Matrix.
+#'   Requires 'TooManyCells' to be installed (follow instructions at
 #'   \url{https://gregoryschwartz.github.io/too-many-cells/} ).
 #' @param mat The input Matrix with gene row names and
 #'   cell barcode column names.
@@ -138,11 +153,16 @@ importResults = function(dir = "out") {
 #' @param labels The input labels data frame with item (cell barcodes) and label
 #'   (whatever labels you want to give them, such as tissue of origin, celltype,
 #'   etc.) columns. Optional.
-#' @param output The output folder for the too-many-cells process. Defaults to
+#' @param output The output folder for the 'too-many-cells' process. Defaults to
 #'   "out".
 #' @param prior The location of the tree that was already made (previous
-#'   too-many-cells output) so quick visual or pruning changes can be made
+#'   'too-many-cells' output) so quick visual or pruning changes can be made
 #'   without remaking the tree (can potentially save hours).
+#' @param docker If using 'too-many-cells' with docker, use this argument as the
+#'   command to call. For instance, if version 0.2.1.0 was pulled from Docker
+#'   Hub, set to "gregoryschwartz/too-many-cells:0.2.1.0".
+#' @param mounts Additional directories to mount if needed for docker.
+#'   The 'prior' argument will automatically mount if specified.
 #' @return A list of each output, including the stdout. Reads the
 #'   following files, see \url{https://gregoryschwartz.github.io/too-many-cells/} for
 #'   more details: "dendrogram.svg", "clumpiness.pdf", "projection.pdf",
@@ -150,12 +170,27 @@ importResults = function(dir = "out") {
 #'   "node_info.csv", and "cluster_diversity.csv".
 #' @export
 #' @examples
+#' input <- system.file("extdata", "mat.csv", package="TooManyCellsR")
+#' inputLabels <- system.file("extdata", "labels.csv", package="TooManyCellsR")
+#' df = read.csv(input, row.names = 1, header = TRUE)
+#' mat = Matrix::Matrix(as.matrix(df), sparse = TRUE)
+#' labelsDf = read.csv(inputLabels, header = TRUE)
+#' # Here we draw this small toy example with no filter or normalization, and
+#' # decrease the size of the branches and increase the size of the leaf nodes.
+#' # With non-toy real world single cell data, these options should not be
+#' # necessary.
 #' \dontrun{
-#' tooManyCells(mat, args = c("make-tree", "--smart-cutoff", "4", "--min-size", "1"))
+#' res = tooManyCells( mat, labels = labelsDf
+#'                   , args = c( "make-tree"
+#'                             , "--no-filter"
+#'                             , "--normalization", "NoneNorm"
+#'                             , "--draw-max-node-size", "40"
+#'                             , "--draw-max-leaf-node-size", "70"
+#'                             )
+#'                   )
 #' plot(res$treePlot, axes = FALSE)
 #' res$stdout
 #' res$nodeInfo
-#' plot(res$clumpinessPlot, axes = FALSE)
 #' }
 
 tooManyCells = function( mat
@@ -163,10 +198,16 @@ tooManyCells = function( mat
                        , labels = NULL
                        , output = "out"
                        , prior = NULL
+                       , docker = NULL
+                       , mounts = c()
                        ) {
 
+  # Convert to absolute paths.
+  dir.create(output, recursive = TRUE)
+  output = normalizePath(output)
+
   # Write matrix.
-  tmpdir = writeMatrix(mat, labels)
+  tmpdir = writeMatrixFiles(mat, labels)
 
   # Determine input matrix location.
   autoArgs = c("--matrix-path", tmpdir)
@@ -181,11 +222,23 @@ tooManyCells = function( mat
 
   # Determine if output already exists.
   if(!is.null(prior)) {
+    prior = normalizePath(prior)
     autoArgs = c(autoArgs, "--prior", prior)
   }
 
-  # Run too-many-cells.
-  stdout = system2("too-many-cells", args = c(args, autoArgs), stdout = TRUE)
+  # Run 'too-many-cells'.
+  stdout = if(is.null(docker)) {
+             system2("too-many-cells", args = c(args, autoArgs), stdout = TRUE)
+           } else {
+             dockerArgs = c("run", "-i", "--rm"
+                           , "-v" , paste0(tmpdir, ":", tmpdir)
+                           , "-v", paste0(output, ":", output)
+                           , if(is.null(prior)){ NULL } else { c("-v", paste0(dirname(prior), ":", dirname(prior))) }
+                           , unlist(sapply(mounts, function(mount) c("-v", paste0(mount, ":", mount))))
+                           , docker
+                           )
+             system2("docker", args = c(dockerArgs, args, autoArgs), stdout = TRUE)
+           }
 
   # Get the output as a data frame.
   stdoutDf = utils::read.csv(text = stdout)

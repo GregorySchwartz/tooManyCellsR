@@ -3,4 +3,4 @@
 export(importResults)
 export(tooManyCells)
 export(tryFunc)
-export(writeMatrix)
+export(writeMatrixFiles)
