@@ -22,11 +22,11 @@ writeMatrixFiles = function(mat, labels = NULL) {
   tmp = tempdir()
 
   # Expression matrix.
-  Matrix::writeMM(mat, paste0(tmp, "/matrix.mtx"))
+  Matrix::writeMM(mat, file.path(tmp, "matrix.mtx"))
 
   # Data frame of genes.
   utils::write.table(data.frame(x = rownames(mat), y = rownames(mat))
-            , file = paste0(tmp, "/genes.tsv")
+            , file = file.path(tmp, "genes.tsv")
             , sep = "\t"
             , row.names = FALSE
             , col.names = FALSE
@@ -35,7 +35,7 @@ writeMatrixFiles = function(mat, labels = NULL) {
 
   # Data frame of cell barcodes.
   utils::write.table(colnames(mat)
-            , file = paste0(tmp, "/barcodes.tsv")
+            , file = file.path(tmp, "barcodes.tsv")
             , sep = "\t"
             , row.names = FALSE
             , col.names = FALSE
@@ -45,7 +45,7 @@ writeMatrixFiles = function(mat, labels = NULL) {
   # Write labels file.
   if(!(is.null(labels))) {
     utils::write.table(labels
-              , file = paste0(tmp, "/labels.csv")
+              , file = file.path(tmp, "labels.csv")
               , sep = ","
               , row.names = FALSE
               , col.names = TRUE
@@ -116,15 +116,15 @@ tryFunc = function(f, file) {
 
 importResults = function(dir = "out") {
 
-  treePlotRes = tryFunc(imager::load.image, paste0(dir, "/dendrogram.svg"))
-  clumpinessPlotRes = tryFunc(imager::load.image, paste0(dir, "/clumpiness.pdf"))
-  projectionPlotRes = tryFunc(imager::load.image, paste0(dir, "/projection.pdf"))
-  labelProjectionPlotRes = tryFunc(imager::load.image, paste0(dir, "/label_projection.pdf"))
+  treePlotRes = tryFunc(imager::load.image, file.path(dir, "dendrogram.svg"))
+  clumpinessPlotRes = tryFunc(imager::load.image, file.path(dir, "clumpiness.pdf"))
+  projectionPlotRes = tryFunc(imager::load.image, file.path(dir, "projection.pdf"))
+  labelProjectionPlotRes = tryFunc(imager::load.image, file.path(dir, "label_projection.pdf"))
 
-  clumpinessRes = tryFunc(utils::read.csv, paste0(dir, "/clumpiness.csv"))
-  clusterInfoRes = tryFunc(utils::read.csv, paste0(dir, "/cluster_info.csv"))
-  nodeInfoRes = tryFunc(utils::read.csv, paste0(dir, "/node_info.csv"))
-  clusterDiversityRes = tryFunc(utils::read.csv, paste0(dir, "/cluster_diversity.csv"))
+  clumpinessRes = tryFunc(utils::read.csv, file.path(dir, "clumpiness.csv"))
+  clusterInfoRes = tryFunc(utils::read.csv, file.path(dir, "cluster_info.csv"))
+  nodeInfoRes = tryFunc(utils::read.csv, file.path(dir, "node_info.csv"))
+  clusterDiversityRes = tryFunc(utils::read.csv, file.path(dir, "cluster_diversity.csv"))
 
   res = list( treePlot            = treePlotRes
             , clumpinessPlot      = clumpinessPlotRes
@@ -217,7 +217,7 @@ tooManyCells = function( mat
 
   # Determine if labels are needed.
   if(!is.null(labels)) {
-    autoArgs = c(autoArgs, "--labels-file", paste0(tmpdir, "/labels.csv"))
+    autoArgs = c(autoArgs, "--labels-file", file.path(tmpdir, "labels.csv"))
   }
 
   # Determine if output already exists.
@@ -245,15 +245,15 @@ tooManyCells = function( mat
 
   # Plot tree if needed.
   if("make-tree" %in% args) {
-    p = imager::load.image(paste0(output, "/dendrogram.svg"))
+    p = imager::load.image(file.path(output, "dendrogram.svg"))
     graphics::plot(p, axes = FALSE)
   }
 
   # Clean up input files.
-  suppressWarnings(file.remove(c( paste0(tmpdir, c("/matrix.mtx"))
-                                , paste0(tmpdir, c("/barcodes.tsv"))
-                                , paste0(tmpdir, c("/genes.tsv"))
-                                , paste0(tmpdir, c("/labels.csv"))
+  suppressWarnings(file.remove(c( file.path(tmpdir, c("matrix.mtx"))
+                                , file.path(tmpdir, c("barcodes.tsv"))
+                                , file.path(tmpdir, c("genes.tsv"))
+                                , file.path(tmpdir, c("labels.csv"))
                                 )))
 
   # Import results.

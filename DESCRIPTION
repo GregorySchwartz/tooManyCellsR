@@ -1,6 +1,6 @@
 Package: TooManyCellsR
 Title: An R Wrapper for 'TooManyCells'
-Version: 0.1.1.0
+Version: 0.1.1.1
 Author: Gregory W. Schwartz
 Maintainer: Gregory W. Schwartz <gsch@pennmedicine.upenn.edu>
 Description: An R wrapper for using 'TooManyCells', a command line program for clustering, visualizing, and quantifying cell clade relationships. See <https://gregoryschwartz.github.io/too-many-cells/> for more details.
