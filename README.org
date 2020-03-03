@@ -10,7 +10,7 @@ This package is an R wrapper around =too-many-cells=. See
 [[https://github.com/GregorySchwartz/too-many-cells]] for latest version of the
 program this wrapper targets.
 
-See [[https://www.biorxiv.org/content/10.1101/519660v1][the bioRxiv paper]] for more information about the algorithm.
+See [[https://doi.org/10.1038/s41592-020-0748-5][the publication]] (and please cite!) for more information about the algorithm.
 
 [[file:img/pruned_tree.png]]
 
